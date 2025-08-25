@@ -1,5 +1,5 @@
 const { defineConfig } = require("cypress");
-const allureWriter = require('allure-cypress/writer');
+const { allureCypress } = require("allure-cypress/reporter");
 
 module.exports = defineConfig({
     blockHosts: ["*.zopim.com", "*.zendesk.com", "*.zdassets.com"],
@@ -19,7 +19,20 @@ module.exports = defineConfig({
     requestTimeout: 10000,
     e2e: {
       setupNodeEvents(on, config) {
-        allureWriter(on, config);
+        allureCypress(on, config, {
+          resultsDir: "../cypress/reports/allure-results",
+        environmentInfo: {
+          platform: config.platform,
+          nodeVersion: config.resolvedNodeVersion,
+          cypressVersion: config.version,
+          baseUrl: config.baseUrl,
+        },
+        videoOnFailOnly: true,
+        stepsFromCommands: {
+          maxArgumentLength: 64,
+          maxArgumentDepth: 5,
+        },
+      });
         return config;
       },
       baseUrl: "https://beautifulslides-staging.appspot.com",

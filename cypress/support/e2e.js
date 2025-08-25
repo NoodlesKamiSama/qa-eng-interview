@@ -17,7 +17,7 @@
 import './commands'
 
 // Import allure-cypress for reporting
-import 'allure-cypress';
+import "allure-cypress";
 
 // Alternatively you can use CommonJS syntax:
 // require('./commands')

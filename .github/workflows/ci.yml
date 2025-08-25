@@ -76,7 +76,7 @@ jobs:
         if: always()
         with:
           name: allure-results-${{ github.run_number }}
-          path: allure-results
+          path: cypress/reports/allure-results
           retention-days: 7
 
       - name: Upload Test Results Summary
