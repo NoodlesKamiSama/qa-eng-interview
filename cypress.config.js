@@ -20,7 +20,7 @@ module.exports = defineConfig({
     e2e: {
       setupNodeEvents(on, config) {
         allureCypress(on, config, {
-          resultsDir: "../cypress/reports/allure-results",
+          resultsDir: "cypress/reports/allure-results",
         environmentInfo: {
           platform: config.platform,
           nodeVersion: config.resolvedNodeVersion,
