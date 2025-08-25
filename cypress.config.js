@@ -1,10 +1,11 @@
 const { defineConfig } = require("cypress");
+const allureWriter = require('allure-cypress/writer');
 
 module.exports = defineConfig({
     blockHosts: ["*.zopim.com", "*.zendesk.com", "*.zdassets.com"],
     downloadsFolder: "downloads",
     fixturesFolder: "cypress/fixtures",
-    screenshotsFolder: "screenshots",
+    screenshotsFolder: "screenshots", 
     videosFolder: "videos",
     numTestsKeptInMemory: 20,
     viewportHeight: 1080,
@@ -18,7 +19,8 @@ module.exports = defineConfig({
     requestTimeout: 10000,
     e2e: {
       setupNodeEvents(on, config) {
-        // implement node event listeners here
+        allureWriter(on, config);
+        return config;
       },
       baseUrl: "https://beautifulslides-staging.appspot.com",
       testIsolation: false

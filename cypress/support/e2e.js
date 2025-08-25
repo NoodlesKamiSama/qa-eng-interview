@@ -16,5 +16,8 @@
 // Import commands.js using ES2015 syntax:
 import './commands'
 
+// Import allure-cypress for reporting
+import 'allure-cypress';
+
 // Alternatively you can use CommonJS syntax:
 // require('./commands')
