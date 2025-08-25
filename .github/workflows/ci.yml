@@ -46,15 +46,18 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: "AI SLIDE Tests - ${{ github.event.inputs.browser }}"
+      - name: "AI SLIDE TESTS - ${{ github.event.inputs.browser }}"
         id: ai-slide
         uses: cypress-io/github-action@v6
         continue-on-error: false
         with:
-          install: false
+          build: yarn cypress info
           browser: '${{ github.event.inputs.browser }}'
-          spec: 'cypress/e2e/ai-slide.cy.js'
-          config: 'video=true,screenshotOnRunFailure=true'
+          command: npx cypress run -b ${{ github.event.inputs.browser }} 
+            --config specPattern="cypress/e2e/ai-slide.cy.js" 
+            --env split=true --env grepTags="${{ github.event.inputs.suite }}"
+            --config-file env/cypress.config.js
+          group: "AI SLIDE TESTS - ${{ github.event.inputs.browser }}"
         env:
           SPLIT: ${{ strategy.job-total }}
           SPLIT_INDEX: ${{ strategy.job-index }}
