@@ -56,7 +56,7 @@ jobs:
           command: npx cypress run -b ${{ github.event.inputs.browser }} 
             --config specPattern="cypress/e2e/ai-slide.cy.js" 
             --env split=true --env grepTags="${{ github.event.inputs.suite }}"
-            --config-file env/cypress.config.js
+            --config-file cypress.config.js
           group: "AI SLIDE TESTS - ${{ github.event.inputs.browser }}"
         env:
           SPLIT: ${{ strategy.job-total }}
