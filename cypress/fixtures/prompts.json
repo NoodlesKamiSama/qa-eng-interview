@@ -1,0 +1,79 @@
+{
+  "examples": [
+    {
+      "prompt": "A quote by Albert Einstein about the universe",
+      "type": "text",
+      "description": "Quote-based content, primarily text"
+    },
+    {
+      "prompt": "Pie chart of market share of social media networks",
+      "type": "chart",
+      "description": "Data visualization with numeric values"
+    },
+    {
+      "prompt": "Compare range, top speed, and price of 8 popular electric cars",
+      "type": "chart",
+      "description": "Comparison chart with numeric data"
+    },
+    {
+      "prompt": "Who is Yoda?",
+      "type": "text",
+      "description": "Informational content, primarily text"
+    },
+    {
+      "prompt": "Top 5 movies of 2010 with movie posters and box office revenue",
+      "type": "chart",
+      "description": "Mixed content with numeric revenue data"
+    },
+    {
+      "prompt": "How to write a blog post in 4 easy steps",
+      "type": "text",
+      "description": "Step-by-step guide, primarily text"
+    },
+    {
+      "prompt": "Rank the top 5 streaming services on a scale of 1-100",
+      "type": "chart",
+      "description": "Ranking chart with numeric scores"
+    },
+    {
+      "prompt": "Timeline of great future inventions",
+      "type": "visual",
+      "description": "Timeline visualization, may have years but not score data"
+    },
+    {
+      "prompt": "Chart the population of the world since 1900 by every 5 years",
+      "type": "chart",
+      "description": "Population chart with numeric data"
+    },
+    {
+      "prompt": "Google's ad revenue from 2010 through 2020",
+      "type": "chart",
+      "description": "Revenue chart with numeric data"
+    },
+    {
+      "prompt": "Logos of the top 9 consumer companies",
+      "type": "visual",
+      "description": "Logo collection, primarily visual"
+    },
+    {
+      "prompt": "Create a table for the last 10 years of the Superbowl including year, winner, loser, quarterbacks and score",
+      "type": "table",
+      "description": "Structured table with mixed data"
+    },
+    {
+      "prompt": "Photos of great scientists",
+      "type": "visual",
+      "description": "Photo collection, primarily visual"
+    }
+  ],
+  "custom": {
+    "prompt": "Create a ranking table of the top 3 programming languages in 2024. Include columns for Language Name and Popularity Score (1-100)",
+    "type": "table",
+    "description": "Custom deterministic prompt for reliable testing",
+    "expectedContent": {
+      "languages": ["Python", "JavaScript", "Java"],
+      "hasNumericScores": true,
+      "isTable": true
+    }
+  }
+}

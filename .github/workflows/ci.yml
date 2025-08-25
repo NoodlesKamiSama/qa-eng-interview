@@ -1,0 +1,159 @@
+name: BAI_TESTS
+on:
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+    inputs:
+      # Choose browser automation will run against it
+      browser:
+        default: chrome
+        description: Please select Browser to run tests
+        required: false
+        type: choice
+        options:
+        - chrome
+        - firefox
+        - edge
+        - electron
+
+      # Choose which group/suite or individual test cases will be triggered
+      suite:
+        default: '@slides'
+        description: Select Test cases to run by ID, Group or Suite using @ tag
+        required: false
+        type: string
+
+concurrency:
+  group: bai-tests
+  cancel-in-progress: false
+
+jobs:
+  AI-SLIDE-TESTS:
+    runs-on: ubuntu-latest
+    container:
+      image: cypress/browsers:node-20.12.0-chrome-123.0.6312.86-1-ff-124.0.2-edge-123.0.2420.65-1
+      options: --user 1001
+    strategy:
+      fail-fast: false
+      matrix:
+        containers: [1] # Uses 1 parallel instance
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4.0.0
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: "AI SLIDE Tests - ${{ github.event.inputs.browser }}"
+        id: ai-slide
+        uses: cypress-io/github-action@v6
+        continue-on-error: false
+        with:
+          install: false
+          browser: '${{ github.event.inputs.browser }}'
+          spec: 'cypress/e2e/ai-slide.cy.js'
+          config: 'video=true,screenshotOnRunFailure=true'
+        env:
+          SPLIT: ${{ strategy.job-total }}
+          SPLIT_INDEX: ${{ strategy.job-index }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          COMMIT_INFO_BRANCH: ${{ github.ref_name }}
+          BROWSER: ${{ github.event.inputs.browser }}
+
+      - name: Upload Cypress Screenshots
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: cypress-screenshots-${{ github.run_number }}
+          path: cypress/screenshots
+          retention-days: 7
+
+      - name: Upload Cypress Videos
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: cypress-videos-${{ github.run_number }}
+          path: cypress/videos
+          retention-days: 7
+
+  GENERATE-ALLURE-REPORT:
+    runs-on: ubuntu-latest    
+    needs: [AI-SLIDE-TESTS]
+    if: always()
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4.0.0
+
+      - name: Download test artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: cypress-videos-${{ github.run_number }}
+          path: cypress/videos
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+
+      - name: Install Allure
+        run: |
+          curl -o allure-2.24.0.tgz -Ls https://github.com/allure-framework/allure2/releases/download/2.24.0/allure-2.24.0.tgz
+          tar -xzf allure-2.24.0.tgz
+          sudo cp -r allure-2.24.0/* /usr/local/
+
+      - name: Create Allure Results
+        run: |
+          mkdir -p allure-results
+          
+          # Create executor info
+          cat > allure-results/executor.json << EOF
+          {
+            "name": "GitHub Actions",
+            "type": "github",
+            "url": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}",
+            "buildOrder": ${{ github.run_number }},
+            "buildName": "${{ github.workflow }} #${{ github.run_number }}",
+            "buildUrl": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}",
+            "reportName": "AI Slide Tests Report"
+          }
+          EOF
+          
+          # Create environment info
+          cat > allure-results/environment.properties << EOF
+          Browser=${{ github.event.inputs.browser }}
+          Test.Suite=${{ github.event.inputs.suite }}
+          Environment=CI
+          Run.ID=${{ github.run_number }}
+          EOF
+
+      - name: Generate Allure Report
+        run: |
+          allure generate allure-results --clean -o allure-report
+          echo "📊 Allure report generated successfully!"
+
+      - name: Upload Allure Report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: allure-report-${{ github.run_number }}
+          path: allure-report
+          retention-days: 30
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        if: always()
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: allure-report
+          destination_dir: reports/${{ github.run_number }}
+
+      - name: Comment PR with Report Link
+        if: always()
+        run: |
+          echo "🎯 **Test Report Generated!**" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "📊 **Allure Report:** https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/reports/${{ github.run_number }}/" >> $GITHUB_STEP_SUMMARY
+          echo "🎬 **Test Videos:** Available in artifacts" >> $GITHUB_STEP_SUMMARY
+          echo "🖼️ **Screenshots:** Available in artifacts (if tests failed)" >> $GITHUB_STEP_SUMMARY
