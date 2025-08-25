@@ -1,0 +1,7 @@
+"DESCRIPTION","DURATION IN MS","NAME","PARENT SUITE","START TIME","STATUS","STOP TIME","SUB SUITE","SUITE","TEST CLASS","TEST METHOD"
+"","10696","should validate text content: Einstein quote","AI-generated slides: stable validations","Mon Aug 25 21:51:12 UTC 2025","passed","Mon Aug 25 21:51:23 UTC 2025","","Example prompts validation","",""
+"","11001","should validate visual content: Timeline of great future inventions","AI-generated slides: stable validations","Mon Aug 25 21:51:23 UTC 2025","passed","Mon Aug 25 21:51:34 UTC 2025","","Example prompts validation","",""
+"","12889","should generate and validate a custom deterministic prompt","AI-generated slides: stable validations","Mon Aug 25 21:51:55 UTC 2025","passed","Mon Aug 25 21:52:08 UTC 2025","","Custom prompt validation","",""
+"","10440","should validate table content: Superbowl table","AI-generated slides: stable validations","Mon Aug 25 21:51:45 UTC 2025","passed","Mon Aug 25 21:51:55 UTC 2025","","Example prompts validation","",""
+"","10637","should validate chart content: Social media chart","AI-generated slides: stable validations","Mon Aug 25 21:51:34 UTC 2025","passed","Mon Aug 25 21:51:45 UTC 2025","","Example prompts validation","",""
+"","8445","should validate streaming services ranking with numeric data","AI-generated slides: stable validations","Mon Aug 25 21:51:03 UTC 2025","passed","Mon Aug 25 21:51:12 UTC 2025","","","",""
